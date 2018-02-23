@@ -10,8 +10,18 @@ io.on('connection', function (socket) {
   console.log('a user connected');
   socket.on('chat message', function (msg) {
     console.log('message: ' + msg);
-    io.emit('chat message', { for: 'everyone' }, msg);
+    io.emit('chat message', msg);
   });
+
+  socket.on('user is typing', function() {
+    console.log("a user is typing")
+    io.emit('user is typing', "User is typing")
+  })
+
+  socket.on("remove typing", function() {
+    io.emit("remove typing");
+  });
+  
   socket.on('disconnect', function () {
     console.log('user disconnected');
   });

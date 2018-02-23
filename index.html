@@ -49,6 +49,14 @@
     #messages li:nth-child(odd) {
       background: #eee;
     }
+
+    p {
+      background: #eee;
+      padding: 3px;
+      position: fixed;
+      bottom: 45px;
+      width: 100%;
+    }
   </style>
 </head>
 <script src="/socket.io/socket.io.js"></script>
@@ -59,11 +67,20 @@
 <script>
   $(function () {
     var socket = io();
-    $('form').submit(function () {
+    $('form').submit(function() {
       socket.emit('chat message', $('#m').val());
       $('#m').val('');
       return false;
     });
+    
+    socket.on('user is typing', function(msg) {
+      $('p').text(msg)
+    })
+
+    socket.on('remove typing', function () {
+      $('p').text('')
+    });
+
     socket.on('chat message', function (msg) {
       $('#messages').append($('<li>').text(msg));
     });
@@ -71,6 +88,7 @@
 </script>
 <body>
   <ul id="messages"></ul>
+  <p id="is-typing"></p>
   <form action="">
     <input id="m" autocomplete="off" />
     <button>Send</button>
